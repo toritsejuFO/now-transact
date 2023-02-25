@@ -1,0 +1,9 @@
+version: 3.0.0
+
+info:
+  title: Now Transact
+  version: v0.0.1
+  description: API sepcification for the now-transact application
+
+servers:
+  url: /api
