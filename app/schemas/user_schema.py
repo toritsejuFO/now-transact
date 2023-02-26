@@ -1,7 +1,5 @@
 import re
-from marshmallow import EXCLUDE, validates, ValidationError, fields
-
-from app import ma
+from marshmallow import Schema, EXCLUDE, validates, validates_schema, ValidationError, fields
 
 def required_str(field):
     return fields.String(required=True, error_messages={'required': f'{field} is required'})
@@ -9,7 +7,7 @@ def required_str(field):
 def required_email(field):
     return fields.Email(required=True, error_messages={'required': f'{field} is required'})
 
-class UserSchema(ma.SQLAlchemySchema):
+class NewUserSchema(Schema):
     class Meta:
         unknown = EXCLUDE
 
@@ -48,5 +46,34 @@ class UserSchema(ma.SQLAlchemySchema):
         if not value:
             raise ValidationError(f'{field} cannot be empty')
 
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
+class UpdateUserSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    firstname = required_str('firstname')
+    lastname = required_str('firstname')
+    email = required_email('email')
+    phonenumber = required_str('firstname')
+
+    @validates('firstname')
+    def validate_firstname(self, value):
+        self.__validate_empty('firstname', value)
+        
+    @validates('lastname')
+    def validate_lastname(self, value):
+        self.__validate_empty('lastname', value)
+
+    @validates('email')
+    def validate_email(self, value):
+        self.__validate_empty('email', value)
+
+    @validates('phonenumber')
+    def validate_phonenumber(self, value):
+        self.__validate_empty('phonenumber', value)
+
+    def __validate_empty(self, field, value):
+        if not value:
+            raise ValidationError(f'{field} cannot be empty')
+
+user_schema = NewUserSchema()
+update_user_schema = UpdateUserSchema()

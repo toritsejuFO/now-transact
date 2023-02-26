@@ -1,18 +1,27 @@
 from app.models import User
 
 class UserDao:
-    @staticmethod
-    def create_user(schema_payload):
-        new_user = User(**schema_payload)
+    def create_user(schema):
+        new_user = User(**schema)
         new_user.save()
         return new_user
 
-    def find_user_by_id(user_id):
-        return User.query.filter(User.id == user_id).first()
-    
-    @staticmethod
-    def user_exist(schema):
-        email = schema['email']
-        phonenumber = schema['phonenumber']
+    def find_user_by(**kwargs):
+        return User.query.filter_by(**kwargs).first()
+
+    def update_user(user_id, schema):
+        existing_user = User.query.filter(User.id == user_id).first()
+        existing_user.firstname = schema['firstname']
+        existing_user.lastname = schema['lastname']
+        existing_user.email = schema['email']
+        existing_user.phonenumber = schema['phonenumber']
+        existing_user.save()
+        return existing_user
+
+    def get_user_count_by_or(email, phonenumber):
         user_count = User.query.filter((User.email==email) | (User.phonenumber==phonenumber)).count()
-        return user_count > 0
+        return user_count
+
+    def get_users_by_or(email, phonenumber):
+        users = User.query.filter((User.email==email) | (User.phonenumber==phonenumber)).all()
+        return users

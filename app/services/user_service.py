@@ -1,45 +1,58 @@
 from werkzeug.security import generate_password_hash
 
 from app.dao import UserDao
-from app.schemas import user_schema
+from app.schemas import user_schema, update_user_schema
 from app.exceptions import AppException
 from app import db
 
 class UserService:
-    @staticmethod
     def create_user(payload):
         schema = user_schema.load(payload)
-
-        if UserDao.user_exist(schema):
+        if UserDao.get_user_count_by_or(email=schema['email'], phonenumber=schema['phonenumber']) > 0:
             raise AppException('Try again with another email or phonenumber', 409)
 
         try:
-            schema = UserService.hash_password(schema)
+            schema['password'] = UserService.hash_password(schema['password'])
             new_user = UserDao.create_user(schema)
             return UserService.clean_password(user_schema.dump(new_user))
         except Exception as ex:
             db.session.rollback()
             raise AppException('Failed to create user', 500, ex)
 
-    @staticmethod
     def get_user(user_id):
-        try:
-            user = UserDao.find_user_by_id(user_id)
-        except Exception as ex:
-            raise AppException('Failed to retrieve user', 500, ex)
-
+        user = UserDao.find_user_by(id=user_id)
         if user is None:
             raise AppException('User not found', 404)
+
         return UserService.clean_password(user_schema.dump(user))
 
-    @staticmethod
+    def update_user(user_id, payload):
+        update_schema = update_user_schema.load(payload)
+
+        user_to_update =  UserDao.find_user_by(id=user_id)
+        if not user_to_update:
+            raise AppException('User not found', 404)
+
+        # Do not allow user update to email or phonenumber belonging to another user
+        existing_users =  UserDao.get_users_by_or(email=payload['email'], phonenumber=payload['phonenumber'])
+        if len(existing_users) > 0:
+            error_msg = 'Try again with another email or phonenumber'
+            if len(existing_users) > 1:
+                raise AppException(error_msg, 409)
+            if existing_users[0].id is not user_to_update.id:
+                raise AppException(error_msg, 409)
+
+        try:
+            updated_user = UserDao.update_user(user_id, update_schema)
+            return UserService.clean_password(user_schema.dump(updated_user))
+        except Exception as ex:
+            db.session.rollback()
+            raise Exception('Failed to update user', 500, ex)
+
     def clean_password(schema):
         if 'password' in schema:
             del schema['password']
         return schema
 
-    @staticmethod
-    def hash_password(schema):
-        if 'password' in schema:
-            schema['password'] = generate_password_hash(schema['password'])
-        return schema
+    def hash_password(password):
+        return generate_password_hash(password)

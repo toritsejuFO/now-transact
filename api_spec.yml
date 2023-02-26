@@ -6,7 +6,7 @@ info:
   description: API sepcification for the now-transact application
 
 servers:
-  - url: /api
+  - url: /api/v1
 
 paths:
   /users:
@@ -33,6 +33,22 @@ paths:
       responses:
         200:
           description: Successfully retrieved user by id
+    put:
+      summary: Update a user by id
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      requestBody:
+        description: Update a user by id
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        200:
+          description: Successfully retrieved user by id
 
 components:
   schemas:
@@ -48,6 +64,17 @@ components:
         phonenumber:
           type: string
         password:
+          type: string
+    UpdateUser:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        phonenumber:
           type: string
   parameters:
     user_id:

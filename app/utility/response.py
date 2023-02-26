@@ -1,5 +1,4 @@
 class Response:
-    @staticmethod
     def success(data):
         response = {
             'success': True,
@@ -7,7 +6,6 @@ class Response:
         }
         return response
 
-    @staticmethod
     def failure(message, data=None):
         response = {
             'success': False,
