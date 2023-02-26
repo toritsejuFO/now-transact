@@ -54,7 +54,7 @@ class AuthService:
             raise AppException('Invalid token. Kindly log in again', 403)
 
 
-def login_required(func):
+def authorization_required(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if 'x-auth-token' not in request.headers.keys(lower=True):
