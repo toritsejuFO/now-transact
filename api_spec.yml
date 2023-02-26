@@ -56,4 +56,4 @@ components:
       name: user_id
       required: true
       schema:
-        type: string
+        type: number
