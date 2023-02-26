@@ -72,6 +72,15 @@ paths:
       responses:
         201:
           description: Successfully authenticated user
+  /accounts:
+    get:
+      summary: Retrieve an account
+      tags: [Account]
+      # parameters:
+      #   - $ref: '#/components/parameters/user_id'
+      responses:
+        200:
+          description: Successfully retrieved user
 
 components:
   schemas:
