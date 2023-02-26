@@ -13,6 +13,7 @@ class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         unknown = EXCLUDE
 
+    id = fields.Integer()
     firstname = required_str('firstname')
     lastname = required_str('lastname')
     email = required_email('email')

@@ -22,8 +22,17 @@ paths:
               x-body-name: payload
               $ref: '#/components/schemas/User'
       responses:
-        200:
+        201:
           description: Successfully created user
+  /users/{user_id}:
+    get:
+      summary: Retrieve a user by id
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        200:
+          description: Successfully retrieved user by id
 
 components:
   schemas:
@@ -40,3 +49,11 @@ components:
           type: string
         password:
           type: string
+  parameters:
+    user_id:
+      in: path
+      description: id of user to be retrieved
+      name: user_id
+      required: true
+      schema:
+        type: string
