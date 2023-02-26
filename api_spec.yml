@@ -1,4 +1,4 @@
-version: 3.0.0
+openapi: 3.0.0
 
 info:
   title: Now Transact
@@ -6,4 +6,37 @@ info:
   description: API sepcification for the now-transact application
 
 servers:
-  url: /api
+  - url: /api
+
+paths:
+  /users:
+    post:
+      summary: Create a user
+      tags: [User]
+      requestBody:
+        description: Create a user
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Successfully created user
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        phonenumber:
+          type: string
+        password:
+          type: string
