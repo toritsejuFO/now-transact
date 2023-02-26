@@ -57,6 +57,21 @@ paths:
       responses:
         200:
           description: Successfully deleted user
+  /auth:
+    post:
+      summary: Authenticate user and receive token
+      tags: [User, Auth]
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/AuthCredentials'
+      responses:
+        201:
+          description: Successfully authenticated user
 
 components:
   schemas:
@@ -83,6 +98,13 @@ components:
         email:
           type: string
         phonenumber:
+          type: string
+    AuthCredentials:
+      type: object
+      properties:
+        id:
+          type: integer
+        password:
           type: string
   parameters:
     user_id:
