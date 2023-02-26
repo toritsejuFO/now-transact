@@ -1,4 +1,5 @@
 from app.models import User
+from app import db
 
 class UserDao:
     def create_user(schema):
@@ -17,6 +18,10 @@ class UserDao:
         existing_user.phonenumber = schema['phonenumber']
         existing_user.save()
         return existing_user
+    
+    def delete_user(user_to_delete):
+        db.session.delete(user_to_delete)
+        db.session.commit()
 
     def get_user_count_by_or(email, phonenumber):
         user_count = User.query.filter((User.email==email) | (User.phonenumber==phonenumber)).count()
@@ -25,3 +30,6 @@ class UserDao:
     def get_users_by_or(email, phonenumber):
         users = User.query.filter((User.email==email) | (User.phonenumber==phonenumber)).all()
         return users
+    
+    def rollback():
+        db.session.rollback()

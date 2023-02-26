@@ -14,7 +14,7 @@ paths:
       summary: Create a user
       tags: [User]
       requestBody:
-        description: Create a user
+        description: User to create
         required: true
         content:
           application/json:
@@ -32,14 +32,14 @@ paths:
         - $ref: '#/components/parameters/user_id'
       responses:
         200:
-          description: Successfully retrieved user by id
+          description: Successfully retrieved user
     put:
       summary: Update a user by id
       tags: [User]
       parameters:
         - $ref: '#/components/parameters/user_id'
       requestBody:
-        description: Update a user by id
+        description: User to update
         required: true
         content:
           application/json:
@@ -48,7 +48,15 @@ paths:
               $ref: '#/components/schemas/UpdateUser'
       responses:
         200:
-          description: Successfully retrieved user by id
+          description: Successfully retrieved user
+    delete:
+      summary: Delete a user by id
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        200:
+          description: Successfully deleted user
 
 components:
   schemas:

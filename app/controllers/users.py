@@ -12,3 +12,7 @@ def get(user_id):
 def put(user_id, payload):
     user = UserService.update_user(user_id, payload)
     return Response.success(user), 200
+
+def delete(user_id):
+    user = UserService.delete_user(user_id)
+    return Response.success(user), 200
