@@ -15,3 +15,8 @@ def get(account_id, subscriber):
 def put(account_id, payload, subscriber):
     account = AccountService.update_account(account_id, payload, subscriber)
     return Response.success(account), 200
+
+@authentication_required
+def delete(account_id, subscriber):
+    account = AccountService.delete_account(account_id, subscriber)
+    return Response.success(account), 200

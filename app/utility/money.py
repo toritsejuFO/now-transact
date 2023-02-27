@@ -2,9 +2,9 @@ from decimal import *
 getcontext().prec = 2
 
 class Money:
-    def __init__(self, amount: str):
-        if not isinstance(amount, str):
-            raise ValueError('Invalid amount provided, amount must be a string')
+    def __init__(self, amount):
+        if not isinstance(amount, str) and not isinstance(amount, Decimal):
+            raise ValueError('Invalid amount provided')
         self.amount = Decimal(amount)
         self.currency = 'NGN'
 
@@ -16,3 +16,6 @@ class Money:
 
     def to_amount(self):
         return str(self.amount)
+
+    def is_zero(self):
+        return self.amount == 0

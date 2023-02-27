@@ -112,6 +112,14 @@ paths:
       responses:
         200:
           description: Successfully created account
+    delete:
+      summary: Delete an account
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
+      responses:
+        200:
+          description: Successfully deleted account
 
 components:
   schemas:

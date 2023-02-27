@@ -19,7 +19,7 @@ class Account(db.Model):
 
     def __init__(self, account_name, account_holder_id):
         self.account_name = account_name
-        self.account_balance = Money('0.00').to_amount()
+        self.account_balance = Money('0.01').to_amount()
         self.account_number = Account.__generate_account_number()
         self.account_type = 'CURRENT'
         self.account_holder = User.query.filter_by(id=account_holder_id).first()
