@@ -87,12 +87,31 @@ paths:
       responses:
         200:
           description: Successfully created account
+  /accounts/{account_id}:
     get:
-      summary: Retrieve user accounts
+      summary: Retrieve an account
       tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
       responses:
         200:
-          description: Successfully retrieved accounts
+          description: Successfully retrieved account
+    put:
+      summary: Update an account
+      tags: [Account]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
+      requestBody:
+        description: Account update payload
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/Account'
+      responses:
+        200:
+          description: Successfully created account
 
 components:
   schemas:
@@ -135,8 +154,15 @@ components:
   parameters:
     user_id:
       in: path
-      description: id of user to be retrieved
+      description: id of user
       name: user_id
+      required: true
+      schema:
+        type: number
+    account_id:
+      in: path
+      description: id of account
+      name: account_id
       required: true
       schema:
         type: number

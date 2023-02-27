@@ -1,12 +1,12 @@
 from app.dao import AccountDao
-from app.schemas import account_schema, accounts_schema
+from app.schemas import account_schema
 from app.exceptions import AppException
 
 class AccountService:
     def create_account(payload, subscriber):
-        constrained_payload = { 'account_name': payload['account_name'] }
+        trimmed_payload = { 'account_name': payload['account_name'] }
         user_id = subscriber['id']
-        schema = account_schema.load(constrained_payload)
+        schema = account_schema.load(trimmed_payload)
 
         if AccountDao.has_account(user_id):
             raise AppException('Cannot create more than one account at this time', 400)
@@ -18,8 +18,22 @@ class AccountService:
             AccountDao.rollback()
             raise AppException('Could not create account', 500)
 
-    def get_accounts(subscriber):
+    def get_account(account_id, subscriber):
         user_id = subscriber['id']
-        accounts = AccountDao.get_accounts(user_id)
-        return accounts_schema.dump(accounts)
+        account = AccountDao.get_account_by(account_id, user_id)
+        return account_schema.dump(account)
 
+    def update_account(account_id, payload, subscriber):
+        trimmed_payload = { 'account_name': payload['account_name'] }
+        schema = account_schema.load(trimmed_payload)
+        user_id = subscriber['id']
+
+        if not AccountDao.has_account(user_id):
+            raise AppException('Cannot update non-existent account, kindly create one first', 400)
+
+        try:
+            account = AccountDao.update_account(account_id, schema['account_name'], user_id)
+            return account_schema.dump(account)
+        except:
+            AccountDao.rollback()
+            raise AppException('Could not update account', 500)

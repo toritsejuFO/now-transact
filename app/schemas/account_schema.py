@@ -19,4 +19,3 @@ class AccountSchema(Schema):
             raise ValidationError('account_name cannot be empty')
 
 account_schema = AccountSchema()
-accounts_schema = AccountSchema(many=True)

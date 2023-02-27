@@ -7,6 +7,11 @@ def post(payload, subscriber):
     return Response.success(account), 201
 
 @authentication_required
-def search(subscriber):
-    accounts = AccountService.get_accounts(subscriber)
-    return Response.success(accounts), 200
+def get(account_id, subscriber):
+    account = AccountService.get_account(account_id, subscriber)
+    return Response.success(account), 200
+
+@authentication_required
+def put(account_id, payload, subscriber):
+    account = AccountService.update_account(account_id, payload, subscriber)
+    return Response.success(account), 200

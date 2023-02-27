@@ -7,9 +7,15 @@ class AccountDao:
         account.save()
         return account
 
-    def get_accounts(account_holder_id):
-        accounts = Account.query.filter_by(account_holder_id=account_holder_id).all()
-        return accounts
+    def get_account_by(account_id, account_holder_id):
+        account = Account.query.filter_by(id=account_id, account_holder_id=account_holder_id).first()
+        return account
+
+    def update_account(account_id, account_name, account_holder_id):
+        account = AccountDao.get_account_by(account_id, account_holder_id)
+        account.account_name = account_name
+        account.save()
+        return account
 
     def has_account(account_holder_id):
         count = Account.query.filter_by(account_holder_id=account_holder_id).count()
