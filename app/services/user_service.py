@@ -50,11 +50,11 @@ class UserService:
 
     def delete_user(user_id):
         user_to_delete = UserDao.find_user_by(id=user_id)
-        if user_to_delete:
-            UserDao.delete_user(user_to_delete)
-            return UserService.clean_password(user_schema.dump(user_to_delete))
-        else:
+        if not user_to_delete:
             raise AppException('User not found', 404)
+
+        UserDao.delete_user(user_to_delete)
+        return UserService.clean_password(user_schema.dump(user_to_delete))
 
     def clean_password(schema):
         if 'password' in schema:

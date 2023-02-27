@@ -9,6 +9,12 @@ class User(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     phonenumber = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
+    account = db.relationship(
+        'Account',
+        backref='account_holder',
+        cascade="all, delete, delete-orphan",
+        single_parent=True
+    )
 
     def __init__(self, firstname=None, lastname=None, email=None, phonenumber=None, password=None):
         self.firstname = firstname.title()

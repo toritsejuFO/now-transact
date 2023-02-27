@@ -57,6 +57,69 @@ paths:
       responses:
         200:
           description: Successfully deleted user
+  /auth:
+    post:
+      summary: Authenticate user and receive token
+      tags: [User, Auth]
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/AuthCredentials'
+      responses:
+        201:
+          description: Successfully authenticated user
+  /accounts:
+    post:
+      summary: Create an account
+      tags: [Account]
+      requestBody:
+        description: Account creation payload
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/Account'
+      responses:
+        200:
+          description: Successfully created account
+  /accounts/{account_id}:
+    get:
+      summary: Retrieve an account
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
+      responses:
+        200:
+          description: Successfully retrieved account
+    put:
+      summary: Update an account
+      tags: [Account]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
+      requestBody:
+        description: Account update payload
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/Account'
+      responses:
+        200:
+          description: Successfully created account
+    delete:
+      summary: Delete an account
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
+      responses:
+        200:
+          description: Successfully deleted account
 
 components:
   schemas:
@@ -84,11 +147,30 @@ components:
           type: string
         phonenumber:
           type: string
+    AuthCredentials:
+      type: object
+      properties:
+        id:
+          type: integer
+        password:
+          type: string
+    Account:
+      type: object
+      properties:
+        account_name:
+          type: string
   parameters:
     user_id:
       in: path
-      description: id of user to be retrieved
+      description: id of user
       name: user_id
+      required: true
+      schema:
+        type: number
+    account_id:
+      in: path
+      description: id of account
+      name: account_id
       required: true
       schema:
         type: number
