@@ -1,11 +1,18 @@
+import random
+
 from app.dao import AccountDao
 from app.schemas import account_schema
 from app.exceptions import AppException
-from app.utility import Money
+from app.utility import Money, AccountType
 
 class AccountService:
     def create_account(payload, subscriber):
-        trimmed_payload = { 'account_name': payload['account_name'] }
+        trimmed_payload = {
+            'account_name': payload['account_name'],
+            'account_balance': Money('0.00').to_amount(),
+            'account_number': AccountService.__generate_account_number(),
+            'account_type': AccountType.SAVINGS
+        }
         user_id = subscriber['id']
         schema = account_schema.load(trimmed_payload)
 
@@ -13,7 +20,7 @@ class AccountService:
             raise AppException('Cannot create more than one account at this time', 400)
 
         try:
-            account = AccountDao.create_account(schema['account_name'], user_id)
+            account = AccountDao.create_account(user_id, schema)
             return account_schema.dump(account)
         except:
             AccountDao.rollback()
@@ -21,7 +28,7 @@ class AccountService:
 
     def get_account(account_id, subscriber):
         user_id = subscriber['id']
-        account = AccountDao.get_account_by(account_id=account_id, account_holder_id=user_id)
+        account = AccountDao.get_account_by(id=account_id, account_holder_id=user_id)
 
         if not account:
             raise AppException('Cannot retrieve non-existent account, kindly create one', 404)
@@ -45,7 +52,7 @@ class AccountService:
 
     def delete_account(account_id, subscriber):
         user_id = subscriber['id']
-        to_delete = AccountDao.get_account_by(account_id=account_id, account_holder_id=user_id)
+        to_delete = AccountDao.get_account_by(id=account_id, account_holder_id=user_id)
 
         if not to_delete:
             raise AppException('Cannot delete non-existent account, kindly create one', 404)
@@ -55,4 +62,13 @@ class AccountService:
 
         AccountDao.delete_account(to_delete)
         return account_schema.dump(to_delete)
+
+    def __generate_account_number():
+        number = AccountService.__get_account_number()
+        while AccountDao.exist_by(account_number=number):
+            number = AccountService.__get_account_number()
+        return number
+
+    def __get_account_number():
+        return int(''.join([str(random.randint(0, 9)) for _ in range(10)]))
  

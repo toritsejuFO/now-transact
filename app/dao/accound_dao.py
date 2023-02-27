@@ -2,17 +2,17 @@ from app.models import Account
 from app import db
 
 class AccountDao:
-    def create_account(account_name, account_holder_id):
-        account = Account(account_name, account_holder_id)
+    def create_account(user_id, schema):
+        account = Account(**schema, account_holder_id=user_id)
         account.save()
         return account
 
-    def get_account_by(account_id, account_holder_id):
-        account = Account.query.filter_by(id=account_id, account_holder_id=account_holder_id).first()
+    def get_account_by(**kwargs):
+        account = Account.query.filter_by(**kwargs).first()
         return account
 
-    def update_account(account_id, account_name, account_holder_id):
-        account = AccountDao.get_account_by(account_id, account_holder_id)
+    def update_account(account_id, account_name, user_id):
+        account = AccountDao.get_account_by(id=account_id, account_holder_id=user_id)
         account.account_name = account_name
         account.save()
         return account
@@ -21,8 +21,12 @@ class AccountDao:
         db.session.delete(account)
         db.session.commit()
 
-    def has_account(account_holder_id):
-        count = Account.query.filter_by(account_holder_id=account_holder_id).count()
+    def has_account(user_id):
+        count = Account.query.filter_by(account_holder_id=user_id).count()
+        return count > 0
+
+    def exist_by(**kwargs):
+        count = Account.query.filter_by(**kwargs).count()
         return count > 0
 
     def rollback():
