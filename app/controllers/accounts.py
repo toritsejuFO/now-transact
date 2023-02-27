@@ -1,7 +1,7 @@
 from app.utility import Response
-from app.services import authorization_required
+from app.services import authentication_required, AccountService
 
-@authorization_required
-def search(decoded_payload):
-    print(decoded_payload)
-    return Response.success('Got here'), 200
+@authentication_required
+def post(payload, subscriber):
+    account = AccountService.create_account(payload, subscriber)
+    return Response.success(account), 200

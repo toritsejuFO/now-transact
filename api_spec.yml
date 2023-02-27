@@ -73,14 +73,20 @@ paths:
         201:
           description: Successfully authenticated user
   /accounts:
-    get:
-      summary: Retrieve an account
+    post:
+      summary: Create an account
       tags: [Account]
-      # parameters:
-      #   - $ref: '#/components/parameters/user_id'
+      requestBody:
+        description: Account creation payload
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/Account'
       responses:
         200:
-          description: Successfully retrieved user
+          description: Successfully created account
 
 components:
   schemas:
@@ -114,6 +120,11 @@ components:
         id:
           type: integer
         password:
+          type: string
+    Account:
+      type: object
+      properties:
+        account_name:
           type: string
   parameters:
     user_id:

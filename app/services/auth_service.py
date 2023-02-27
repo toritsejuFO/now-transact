@@ -18,10 +18,10 @@ class AuthService:
         user = UserDao.find_user_by(id=schema['user_id'])
 
         if not user:
-            raise AppException('Invalid login details', 401)
+            raise AppException('Invalid auth details', 401)
 
         if not check_password_hash(user.password, schema['password']):
-            raise AppException('Invalid login details', 401)
+            raise AppException('Invalid auth details', 401)
 
         sub = {
             'id': user.id,
@@ -54,7 +54,7 @@ class AuthService:
             raise AppException('Invalid token. Kindly log in again', 403)
 
 
-def authorization_required(func):
+def authentication_required(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if 'x-auth-token' not in request.headers.keys(lower=True):
@@ -64,6 +64,6 @@ def authorization_required(func):
         if not auth_token or auth_token is None:
             raise AppException('Invalid x-auth-token', 403)
 
-        decoded_payload = AuthService.decode_token(token=auth_token)
-        return func(*args, **kwargs, decoded_payload=decoded_payload)
+        subscriber = AuthService.decode_token(token=auth_token)
+        return func(*args, **kwargs, subscriber=subscriber)
     return wrapper
