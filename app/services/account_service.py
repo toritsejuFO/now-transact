@@ -1,5 +1,5 @@
 from app.dao import AccountDao
-from app.schemas import account_schema
+from app.schemas import account_schema, accounts_schema
 from app.exceptions import AppException
 
 class AccountService:
@@ -17,3 +17,9 @@ class AccountService:
         except:
             AccountDao.rollback()
             raise AppException('Could not create account', 500)
+
+    def get_accounts(subscriber):
+        user_id = subscriber['id']
+        accounts = AccountDao.get_accounts(user_id)
+        return accounts_schema.dump(accounts)
+

@@ -7,6 +7,10 @@ class AccountDao:
         account.save()
         return account
 
+    def get_accounts(account_holder_id):
+        accounts = Account.query.filter_by(account_holder_id=account_holder_id).all()
+        return accounts
+
     def has_account(account_holder_id):
         count = Account.query.filter_by(account_holder_id=account_holder_id).count()
         return count > 0

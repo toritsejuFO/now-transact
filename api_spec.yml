@@ -87,6 +87,12 @@ paths:
       responses:
         200:
           description: Successfully created account
+    get:
+      summary: Retrieve user accounts
+      tags: [User]
+      responses:
+        200:
+          description: Successfully retrieved accounts
 
 components:
   schemas:
