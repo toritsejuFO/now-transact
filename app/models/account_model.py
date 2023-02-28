@@ -12,7 +12,7 @@ class Account(db.Model):
     account_number = db.Column(db.BigInteger, nullable=False)
     account_type = db.Column(db.String, nullable=False)
     account_holder_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # transactions = db.relationship('Transaction', backref='account')
+    transactions = db.relationship('Transaction', backref='account')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

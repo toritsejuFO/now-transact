@@ -21,6 +21,11 @@ class AccountDao:
         db.session.delete(account)
         db.session.commit()
 
+    def save_transaction(account, transaction):
+        account.transactions.append(transaction)
+        account.save()
+        return account, transaction
+
     def has_account(user_id):
         count = Account.query.filter_by(account_holder_id=user_id).count()
         return count > 0

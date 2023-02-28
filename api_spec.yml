@@ -120,6 +120,24 @@ paths:
       responses:
         200:
           description: Successfully deleted account
+  /accounts/{account_id}/transactions:
+    post:
+      operationId: 'app.controllers.transactions.post' # manually specified to limit ambiguity
+      summary: Make a transaction
+      tags: [Transaction]
+      parameters:
+        - $ref: '#/components/parameters/account_id'
+      requestBody:
+        description: Transaction creation payload
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              $ref: '#/components/schemas/Transaction'
+      responses:
+        200:
+          description: Successfully executed transaction
 
 components:
   schemas:
@@ -158,6 +176,15 @@ components:
       type: object
       properties:
         account_name:
+          type: string
+    Transaction:
+      type: object
+      properties:
+        transaction_amount:
+          type: string
+        transaction_description:
+          type: string
+        transaction_type:
           type: string
   parameters:
     user_id:

@@ -9,7 +9,7 @@ class AccountService:
     def create_account(payload, subscriber):
         trimmed_payload = {
             'account_name': payload['account_name'],
-            'account_balance': Money('0.00').to_amount(),
+            'account_balance': Money('0.00').balance(),
             'account_number': AccountService.__generate_account_number(),
             'account_type': AccountType.SAVINGS
         }

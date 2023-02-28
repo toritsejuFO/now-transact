@@ -7,3 +7,9 @@ class AccountType:
 class TransactionType:
     DEPOSIT = 'DEPOSIT'
     WITHDRAWAL = 'WITHDRAWAL'
+    TRANSFER = 'TRANSFER'
+
+class TransactionStatus:
+    PENDING = 'PENDING'
+    FAILED = 'FAILED'
+    SUCCESS = 'SUCCESS'
