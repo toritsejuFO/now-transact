@@ -19,7 +19,6 @@ class AccountDao:
 
     def delete_account(account):
         db.session.delete(account)
-        db.session.commit()
 
     def save_transaction(account, transaction):
         account.transactions.append(transaction)
@@ -33,6 +32,3 @@ class AccountDao:
     def exist_by(**kwargs):
         count = Account.query.filter_by(**kwargs).count()
         return count > 0
-
-    def rollback():
-        db.session.rollback()

@@ -2,6 +2,7 @@ from app.schemas import transaction_schema
 from app.dao import AccountDao, TransactionDao
 from app.exceptions import AppException
 from app.utility import Money, TransactionType, TransactionStatus
+from app import db
 
 class TransactionService:
     def execute(account_id, payload, subscriber):
@@ -17,9 +18,10 @@ class TransactionService:
 
         try:
             account, transaction = AccountDao.save_transaction(account, transaction)
+            db.session.commit()
             return transaction_schema.dump(transaction)
         except Exception as e:
-            AccountDao.rollback()
+            db.session.rollback()
             raise AppException('Error executing transaction', 500, e)
 
     def __execute(account, transaction):

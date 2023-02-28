@@ -4,6 +4,7 @@ from app.dao import AccountDao
 from app.schemas import account_schema
 from app.exceptions import AppException
 from app.utility import Money, AccountType
+from app import db
 
 class AccountService:
     def create_account(payload, subscriber):
@@ -21,9 +22,10 @@ class AccountService:
 
         try:
             account = AccountDao.create_account(user_id, schema)
+            db.session.commit()
             return account_schema.dump(account)
         except:
-            AccountDao.rollback()
+            db.session.rollback()
             raise AppException('Could not create account', 500)
 
     def get_account(account_id, subscriber):
@@ -45,9 +47,10 @@ class AccountService:
 
         try:
             account = AccountDao.update_account(account_id, schema['account_name'], user_id)
+            db.session.commit()
             return account_schema.dump(account)
         except:
-            AccountDao.rollback()
+            db.session.rollback()
             raise AppException('Could not update account', 500)
 
     def delete_account(account_id, subscriber):
@@ -60,8 +63,13 @@ class AccountService:
         if not Money(to_delete.account_balance).is_zero():
             raise AppException('Cannot delete account with non-zero balance, kindly withdraw', 404)
 
-        AccountDao.delete_account(to_delete)
-        return account_schema.dump(to_delete)
+        try:
+            AccountDao.delete_account(to_delete)
+            db.session.commit()
+            return account_schema.dump(to_delete)
+        except Exception as e:
+            db.session.rollback()
+            raise AppException('Could not delete account', 500, e)
 
     def __generate_account_number():
         number = AccountService.__get_account_number()
