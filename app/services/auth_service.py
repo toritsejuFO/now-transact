@@ -1,15 +1,12 @@
-import os
 import functools
 from datetime import datetime, timedelta
 from werkzeug.security import check_password_hash
 import jwt
-from flask import request
+from flask import request, current_app
 
 from app.schemas import auth_schema
 from app.dao import UserDao
 from app.exceptions import AppException
-
-JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 class AuthService:
     def get_auth_token(payload):
@@ -39,12 +36,14 @@ class AuthService:
                 'exp': expiry,
                 'iat': datetime.utcnow()
             }
+            JWT_SECRET_KEY = current_app.config['JWT_SECRET_KEY']
             return jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
         except Exception as e:
             raise AppException('Internal Server Error', 500, e)
 
     def decode_token(token=None):
         try:
+            JWT_SECRET_KEY = current_app.config['JWT_SECRET_KEY']
             payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
             return payload['sub']
         except jwt.ExpiredSignatureError:

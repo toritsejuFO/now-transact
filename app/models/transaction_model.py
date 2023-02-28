@@ -14,6 +14,7 @@ class Transaction(db.Model):
     transaction_description = db.Column(db.String, nullable=False)
     transaction_type = db.Column(db.String, nullable=False)
     transaction_status = db.Column(db.String, nullable=False)
+    origin_ip = db.Column(db.String)
     transaction_account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'))
     entry_date = db.Column(db.DateTime, default=datetime.utcnow)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
