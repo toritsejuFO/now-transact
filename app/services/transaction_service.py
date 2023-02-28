@@ -1,7 +1,11 @@
+from flask import current_app
+from requests.exceptions import Timeout
+
 from app.schemas import transaction_schema
 from app.dao import AccountDao, TransactionDao
 from app.exceptions import AppException
 from app.utility import Money, TransactionType, TransactionStatus
+from app.services.http_service import HttpService
 from app import db
 
 class TransactionService:
@@ -15,6 +19,15 @@ class TransactionService:
 
         transaction = TransactionDao.get_instance(schema, account.id)
         TransactionService.__execute(account, transaction)
+
+        try:
+            # IP_URL has rate limiting, but we don't want that to limit us, no pun intended
+            ip_response = HttpService.get(current_app.config['IP_URL'], {'format': 'json'})
+            transaction.origin_ip = ip_response['ip']
+        except Timeout as e:
+            current_app.logger.info('Taking too long to fetch ip, skipping without ip', e)
+        except Exception as e:
+            raise AppException('Failed to fetch origin ip', 500, e)
 
         try:
             account, transaction = AccountDao.save_transaction(account, transaction)

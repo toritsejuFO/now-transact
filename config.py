@@ -8,6 +8,7 @@ class Config:
     PORT = os.getenv('PORT', 3030)
     DEBUG = os.getenv('DEBUG')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    IP_URL = os.getenv('IP_URL')
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS')
 
