@@ -6,7 +6,6 @@ import jwt
 from flask import request
 
 from app.schemas import auth_schema
-from config import Config
 from app.dao import UserDao
 from app.exceptions import AppException
 

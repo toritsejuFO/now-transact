@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash
 from app.dao import UserDao
 from app.schemas import user_schema, update_user_schema
 from app.exceptions import AppException
+from app import db
 
 class UserService:
     def create_user(payload):
@@ -13,9 +14,10 @@ class UserService:
         try:
             schema['password'] = UserService.hash_password(schema['password'])
             new_user = UserDao.create_user(schema)
+            db.session.commit()
             return UserService.clean_password(user_schema.dump(new_user))
         except Exception as ex:
-            UserDao.rollback()
+            db.session.rollback()
             raise AppException('Failed to create user', 500, ex)
 
     def get_user(user_id):
@@ -43,9 +45,10 @@ class UserService:
 
         try:
             updated_user = UserDao.update_user(user_id, update_schema)
+            db.session.commit()
             return UserService.clean_password(user_schema.dump(updated_user))
         except Exception as ex:
-            UserDao.rollback()
+            db.session.rollback()
             raise AppException('Failed to update user', 500, ex)
 
     def delete_user(user_id):
@@ -53,8 +56,13 @@ class UserService:
         if not user_to_delete:
             raise AppException('User not found', 404)
 
-        UserDao.delete_user(user_to_delete)
-        return UserService.clean_password(user_schema.dump(user_to_delete))
+        try:
+            UserDao.delete_user(user_to_delete)
+            db.session.commit()
+            return UserService.clean_password(user_schema.dump(user_to_delete))
+        except Exception as ex:
+            db.session.rollback()
+            raise AppException('Failed to delete user', 500, ex)
 
     def clean_password(schema):
         if 'password' in schema:
