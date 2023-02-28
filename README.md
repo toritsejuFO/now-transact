@@ -6,6 +6,7 @@ Now Transact is a fictitious fintech company which provides fast online payments
 - User Authentication and Authorization
 - Account Creation and Management
 - Transactions (Deposits and Withdrawals)
+- Transactions Search (with pagination)
 
 ## Required Software Dependencies
 - Python + pip (3.8.x recommended)
