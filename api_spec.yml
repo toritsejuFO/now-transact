@@ -138,6 +138,17 @@ paths:
       responses:
         200:
           description: Successfully executed transaction
+    get:
+      operationId: 'app.controllers.transactions.search'
+      summary: Fetch transactions, accepts query search params
+      tags: [Transaction]
+      parameters:
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/description'
+      responses:
+        200:
+          description: Successfully fetched transactions
 
 components:
   schemas:
@@ -193,11 +204,29 @@ components:
       name: user_id
       required: true
       schema:
-        type: number
+        type: integer
     account_id:
       in: path
       description: id of account
       name: account_id
       required: true
       schema:
-        type: number
+        type: integer
+    offset:
+      in: query
+      description: offset for pagination
+      name: offset
+      schema:
+        type: integer
+    limit:
+      in: query
+      description: limit per page for pagination
+      name: limit
+      schema:
+        type: integer
+    description:
+      in: query
+      description: transaction description
+      name: description
+      schema:
+        type: string

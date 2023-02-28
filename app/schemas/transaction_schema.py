@@ -44,3 +44,4 @@ class TransactionSchema(Schema):
             raise ValidationError(f'{field} cannot be empty')
 
 transaction_schema = TransactionSchema()
+transactions_schema = TransactionSchema(many=True)
