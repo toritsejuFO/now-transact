@@ -35,7 +35,9 @@ class AccountService:
         if not account:
             raise AppException('Cannot retrieve non-existent account, kindly create one', 404)
 
-        return account_schema.dump(account)
+        ret_schema = account_schema.dump(account)
+        ret_schema['transaction_count'] = len(account.transactions)
+        return ret_schema
 
     def update_account(account_id, payload, subscriber):
         trimmed_payload = { 'account_name': payload['account_name'] }
