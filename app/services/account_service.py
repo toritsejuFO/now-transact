@@ -18,7 +18,7 @@ class AccountService:
         schema = account_schema.load(trimmed_payload)
 
         if AccountDao.has_account(user_id):
-            raise AppException('Cannot create more than one account at this time', 400)
+            raise AppException('Cannot create more than one account per user at this time', 400)
 
         try:
             account = AccountDao.create_account(user_id, schema)
