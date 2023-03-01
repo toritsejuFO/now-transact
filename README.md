@@ -23,6 +23,13 @@ Now Transact is a fictitious fintech company which provides fast online payments
 - `python3 -m pip install -r requirements.txt`
 - `python3 run.py` or `flask run`
 
+## Running Tests
+Without coverage
+- `python -m pytest`
+
+With coverage
+- `python -m pytest --cov=app`
+
 ## Documentation
 Swagger is used for documentation, URL can be found on relative path `/api/v1/ui/` of the same host:port the application is running on.
 
