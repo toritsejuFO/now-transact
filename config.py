@@ -18,7 +18,8 @@ class DevelopmentConfig(Config):
 class TestConfig(Config):
     TESTING = True
     ENV = 'test'
-    SQLALCHEMY_DATABASE_URI = f'sqlite3://{os.path.join(basepath, "test.db")}'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' # use in memory
+    # SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(basepath, "test.db")}'
 
 class ProductionConfig(Config):
     DEBUG = False
