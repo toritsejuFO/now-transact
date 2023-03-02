@@ -20,11 +20,12 @@ class Transaction(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def __init__(self, transaction_amount, transaction_description, transaction_type, account_id):
-        self.transaction_id = uuid.uuid4()
+    def __init__(self, transaction_amount, transaction_description, transaction_type, transaction_status, account_id):
+        self.transaction_id = str(uuid.uuid4())
         self.transaction_amount = Money(transaction_amount).balance()
         self.transaction_description = transaction_description
         self.transaction_type = transaction_type
+        self.transaction_status = transaction_status
         self.account = Account.query.filter_by(id=account_id).first()
 
     def save(self):

@@ -11,6 +11,7 @@ from app import db
 class TransactionService:
     def execute(account_id, payload, subscriber):
         schema = transaction_schema.load(payload)
+        schema['transaction_status'] = TransactionStatus.PENDING
         user_id = subscriber['id']
 
         account = AccountDao.get_account_by(id=account_id, account_holder_id=user_id)
@@ -25,8 +26,10 @@ class TransactionService:
             ip_response = HttpService.get(current_app.config['IP_URL'], {'format': 'json'})
             transaction.origin_ip = ip_response['ip']
         except Timeout as e:
+            db.session.rollback()
             current_app.logger.info('Taking too long to fetch ip, skipping without ip', e)
         except Exception as e:
+            db.session.rollback()
             raise AppException('Failed to fetch origin ip', 500, e)
 
         try:
@@ -63,6 +66,7 @@ class TransactionService:
 
         if TransactionService.is_debit(transaction.transaction_type):
             if account_money.subtract(transaction_money).is_negative():
+                db.session.rollback()
                 raise AppException('Terminal account balance can not be negative', 400)
             account.account_balance = Money(account.account_balance).subtract(Money(transaction.transaction_amount)).balance()
         elif TransactionService.is_credit(transaction.transaction_type):
