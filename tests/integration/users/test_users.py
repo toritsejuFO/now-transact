@@ -17,7 +17,7 @@ def app():
     connex_app = create_app()
     connex_app.add_api('../api_spec.yml', resolver=RestyResolver('app.controllers'))
     app = connex_app.app
-    app.logger.disabled = True # remember to comment in pipeline
+    # app.logger.disabled = True # remember to comment in pipeline
 
     with app.app_context() as context:
         context.push()
